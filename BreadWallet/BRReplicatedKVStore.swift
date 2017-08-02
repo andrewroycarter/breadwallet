@@ -721,9 +721,20 @@ open class BRReplicatedKVStore: NSObject {
     fileprivate func checkErr(_ e: Int32, s: String, r: Int32 = SQLITE_NULL) throws {
         if (r == SQLITE_NULL && (e != SQLITE_OK && e != SQLITE_DONE && e != SQLITE_ROW))
             && (e != SQLITE_NULL && e != r) {
-            let es = NSString(cString: sqlite3_errstr(e), encoding: String.Encoding.utf8.rawValue)
-            let em = NSString(cString: sqlite3_errmsg(db), encoding: String.Encoding.utf8.rawValue)
-            log("\(s): errcode=\(e) errstr=\(String(describing: es)) errmsg=\(String(describing: em))")
+           
+            var errorStringComponents = ["\(s):"]
+            
+            if #available(iOS 8.2, *) {
+                let errstrString = "errstr=\(String(cString: sqlite3_errstr(e)))"
+                errorStringComponents.append(errstrString)
+            }
+            
+            let errmsgString = "errmsg=\(String(cString: sqlite3_errmsg(db)))"
+            errorStringComponents.append(errmsgString)
+            
+            let errorString = errorStringComponents.joined(separator: " ")
+            log(errorString)
+            
             throw BRReplicatedKVStoreError.sqLiteError
         }
     }

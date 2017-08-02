@@ -347,7 +347,7 @@ performFetchWithCompletionHandler:(void (^)(UIBackgroundFetchResult))completionH
 }
 
 - (void)application:(UIApplication *)application handleEventsForBackgroundURLSession:(NSString *)identifier
-  completionHandler:(void (^)())completionHandler
+  completionHandler:(void (^)(void))completionHandler
 {
     NSLog(@"Handle events for background url session; identifier=%@", identifier);
 }
